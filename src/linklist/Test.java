@@ -8,6 +8,7 @@ public class Test {
 //        testReverseLinkList();
 //        Solutions.removeNthFromEnd(new ListNode(1), 1);
 //        testReverseOfK();
+          testMergeList();
     }
 
     private static void testRotate() {
@@ -86,5 +87,22 @@ public class Test {
             System.out.println(result.val);
             result = result.next;
         } while (result != null);
+    }
+
+    public static void testMergeList(){
+        ListNode head1 = new ListNode(1);
+        ListNode  head2 = new ListNode(8);
+        ListNode temp1= head1;
+        ListNode temp2= head2;
+        for(int i = 2; i< 6; i++){
+            if(i %2 == 0){
+                temp1.next = new ListNode(i);
+                temp1 = temp1.next;
+            }else{
+//                temp2.next = new ListNode(i);
+//                temp2 = temp2.next;
+            }
+        }
+        Solutions.mergeTwoLists(head1, head2);
     }
 }

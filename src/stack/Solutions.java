@@ -65,4 +65,30 @@ class Solutions {
         return ans;
 
     }
+
+    /**
+     *
+     * Q84:给定 n 个非负整数，用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1 。
+     * [2,1,5,6,2,3]
+     * 求在该柱状图中，能够勾勒出来的矩形的最大面积。
+     * @param heights
+     * @return
+     */
+    public static int largestRectangleArea(int[] heights) {
+        Deque<Integer> stack = new ArrayDeque<>();
+        int ans = 0;
+        stack.add(-1);
+        for(int i = 0; i < heights.length; i++){
+            while (stack.getLast() != -1 && heights[i] <= heights[stack.getLast()]){
+                int top = stack.pollLast();
+                ans = Math.max(heights[top] * (i - stack.getLast() - 1), ans);
+            }
+            stack.add(i);
+        }
+        while (stack.getLast() != -1) {
+            int top = stack.pollLast();
+            ans = Math.max(heights[top] * (heights.length - stack.getLast() - 1), ans);
+        }
+        return ans;
+    }
 }
