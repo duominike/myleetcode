@@ -7,8 +7,8 @@ public class Test {
 //        testAddNumber();
 //        testReverseLinkList();
 //        Solutions.removeNthFromEnd(new ListNode(1), 1);
-//        testReverseOfK();
-          testMergeList();
+        testReverseOfK();
+//          testMergeList();
     }
 
     private static void testRotate() {
@@ -72,7 +72,7 @@ public class Test {
     public static void testReverseOfK(){
         ListNode head = new ListNode(1);
         ListNode temp = head;
-        for(int i = 2; i< 3; i++){
+        for(int i = 2; i< 7; i++){
             temp.next = new ListNode(i);
             temp = temp.next;
         }
@@ -82,7 +82,7 @@ public class Test {
             temp1 = temp1.next;
         } while (temp1 != null);
         System.out.println("");
-        ListNode  result = Solutions.reverseLinkOfK(head, 2);
+        ListNode  result = Solutions.reverseLinkOfK(head, 1);
         do{
             System.out.println(result.val);
             result = result.next;

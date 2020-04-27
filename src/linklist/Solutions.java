@@ -213,6 +213,47 @@ public class Solutions {
     }
 
     /**
+     * 给定一个链表，两两交换其中相邻的节点，并返回交换后的链表。
+     * <p>
+     * 你不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。
+     *
+     * @param head
+     * @return
+     */
+
+    public static ListNode reverseOfk(ListNode head, int groupCount) {
+        ListNode prev = null;
+        int count = 0;
+        ListNode temp = head;
+        while (count < groupCount && temp != null) {
+            prev = temp;
+            temp = temp.next;
+            count++;
+        }
+        if (count == groupCount) {
+            ListNode newTail = head;
+            ListNode curr = head;
+            ListNode next = null;
+            while (count > 0) {
+                ListNode tmp = curr;
+                curr = curr.next;
+                tmp.next = next;
+                next = tmp;
+                count--;
+            }
+            newTail.next = reverseOfk(curr, groupCount);
+            return next;
+        } else {
+            return head;
+        }
+
+    }
+
+    public static ListNode swapPairs(ListNode head) {
+        return reverseOfk(head, 2);
+    }
+
+    /**
      * 合并两个有序链表
      *
      * @param l1
@@ -220,10 +261,10 @@ public class Solutions {
      * @return
      */
     public static ListNode mergeTwoLists(ListNode l1, ListNode l2) {
-        if(l1 == null){
+        if (l1 == null) {
             return l2;
         }
-        if(l2 == null){
+        if (l2 == null) {
             return l1;
         }
         ListNode newHead = null;
@@ -232,32 +273,73 @@ public class Solutions {
         ListNode res = null;
         ListNode resNext = null;
         while (curr1 != null || curr2 != null) {
-            if(curr1 == null){
+            if (curr1 == null) {
                 resNext = curr2;
                 curr2 = curr2.next;
-            }else if(curr2 == null){
+            } else if (curr2 == null) {
                 resNext = curr1;
                 curr1 = curr1.next;
-            }else{
-                if(curr1.val <= curr2.val){
+            } else {
+                if (curr1.val <= curr2.val) {
                     resNext = curr1;
                     curr1 = curr1.next;
-                }else{
+                } else {
                     resNext = curr2;
                     curr2 = curr2.next;
                 }
             }
 
-            if(res == null){
+            if (res == null) {
                 res = resNext;
-            }else{
+            } else {
                 res.next = resNext;
                 res = res.next;
             }
-            if(newHead == null){
+            if (newHead == null) {
                 newHead = res;
             }
         }
         return newHead;
+    }
+
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+
+        ListNode prev = null;
+        ListNode temp = head;
+        ListNode res = null;
+        while (temp != null) {
+            boolean delTemp = false;
+            while (temp.next != null && temp.next.val == temp.val) {
+                ListNode n1 = temp.next;
+                temp.next = n1.next;
+                n1.next = null;
+                delTemp = true;
+            }
+            if (delTemp) {
+                if (res == null) {
+                    res = temp.next;
+                }
+                if (prev == null) {
+                    prev = temp;
+                    temp = temp.next;
+                    prev.next = null;
+                    prev = null;
+                } else {
+                    prev.next = temp.next;
+                    temp.next = null;
+                    temp = prev.next;
+                }
+            } else {
+                prev = temp;
+                temp = temp.next;
+                if (res == null) {
+                    res = prev;
+                }
+            }
+        }
+        return res;
     }
 }
