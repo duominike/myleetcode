@@ -79,6 +79,35 @@ public class Solutions {
 
     /**
      * Q39:
+     * 给定一个无重复元素的数组 candidates 和一个目标数 target ，找出 candidates 中所有可以使数字和为 target 的组合。
+     * <p>
+     * candidates 中的数字可以无限制重复被选取。
+     * <p>
+     * 说明：
+     * <p>
+     * 所有数字（包括 target）都是正整数。
+     * 解集不能包含重复的组合。 
+     * 示例 1:
+     * <p>
+     * 输入: candidates = [2,3,6,7], target = 7,
+     * 所求解集为:
+     * [
+     * [7],
+     * [2,2,3]
+     * ]
+     * 示例 2:
+     * <p>
+     * 输入: candidates = [2,3,5], target = 8,
+     * 所求解集为:
+     * [
+     *   [2,2,2,2],
+     *   [2,3,3],
+     *   [3,5]
+     * ]
+     * <p>
+     * 来源：力扣（LeetCode）
+     * 链接：https://leetcode-cn.com/problems/combination-sum
+     * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
      *
      * @param candidates
      * @param target
@@ -104,6 +133,74 @@ public class Solutions {
             solution.add(candidates[i]);
             backTrace39(i, candidates, target - candidates[i], res, solution);
             solution.removeLast();
+        }
+    }
+
+    /**
+     * Q40:
+     * 给定一个数组 candidates 和一个目标数 target ，找出 candidates 中所有可以使数字和为 target 的组合。
+     * <p>
+     * candidates 中的每个数字在每个组合中只能使用一次。
+     * <p>
+     * 说明：
+     * <p>
+     * 所有数字（包括目标数）都是正整数。
+     * 解集不能包含重复的组合。 
+     * 示例 1:
+     * <p>
+     * 输入: candidates = [10,1,2,7,6,1,5], target = 8,
+     * 所求解集为:
+     * [
+     * [1, 7],
+     * [1, 2, 5],
+     * [2, 6],
+     * [1, 1, 6]
+     * ]
+     * 示例 2:
+     * <p>
+     * 输入: candidates = [2,5,2,1,2], target = 5,
+     * 所求解集为:
+     * [
+     *   [1,2,2],
+     *   [5]
+     * ]
+     * <p>
+     * 来源：力扣（LeetCode）
+     * 链接：https://leetcode-cn.com/problems/combination-sum-ii
+     * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+     * 1, 1 ,7
+     */
+
+    public static List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        Deque<Integer> oneResult = new ArrayDeque<>();
+        Arrays.sort(candidates);
+        boolean[] used = new boolean[candidates.length];
+        backTrace40(0, candidates, used, target, oneResult, res);
+        return res;
+    }
+
+    public static void backTrace40(int start, int[] candidates, boolean[] used, int target,
+                                   Deque<Integer> oneResult, List<List<Integer>> results) {
+        if (target < 0) {
+            return;
+        }
+        if (target == 0) {
+            results.add(new ArrayList<>(oneResult));
+            return;
+        }
+        for (int i = start; i < candidates.length; i++) {
+            if (used[i]) {
+                continue;
+            }
+            if(i > 0 && candidates[i] == candidates[i-1] && !used[i-1]){
+                continue;
+            }
+            oneResult.add(candidates[i]);
+            used[i] = true;
+            backTrace40(start + 1, candidates, used, target - candidates[i], oneResult, results);
+            used[i] = false;
+            oneResult.pollLast();
         }
     }
 
@@ -241,10 +338,124 @@ public class Solutions {
         for (int i = 0; i < nums.length; i++) {
             if (!deque.contains(nums[i])) {
                 deque.add(nums[i]);
-                backTrace46( deque, nums, results);
+                backTrace46(deque, nums, results);
                 deque.removeLast();
             }
         }
     }
+
+    /**
+     * Q10. 正则表达式匹配
+     * 给你一个字符串 s 和一个字符规律 p，请你来实现一个支持 '.' 和 '*' 的正则表达式匹配。
+     * <p>
+     * '.' 匹配任意单个字符
+     * '*' 匹配零个或多个前面的那一个元素
+     * 所谓匹配，是要涵盖 整个 字符串 s的，而不是部分字符串。
+     * <p>
+     * 说明:
+     * <p>
+     * s 可能为空，且只包含从 a-z 的小写字母。
+     * p 可能为空，且只包含从 a-z 的小写字母，以及字符 . 和 *。
+     * 示例 1:
+     * <p>
+     * 输入:
+     * s = "aa"
+     * p = "a"
+     * 输出: false
+     * 解释: "a" 无法匹配 "aa" 整个字符串。
+     * 示例 2:
+     * <p>
+     * 输入:
+     * s = "aa"
+     * p = "a*"
+     * 输出: true
+     * 解释: 因为 '*' 代表可以匹配零个或多个前面的那一个元素, 在这里前面的元素就是 'a'。因此，字符串 "aa" 可被视为 'a' 重复了一次。
+     * 示例 3:
+     * <p>
+     * 输入:
+     * s = "ab"
+     * p = ".*"
+     * 输出: true
+     * 解释: ".*" 表示可匹配零个或多个（'*'）任意字符（'.'）。
+     * 示例 4:
+     * <p>
+     * 输入:
+     * s = "aab"
+     * p = "c*a*b"
+     * 输出: true
+     * 解释: 因为 '*' 表示零个或多个，这里 'c' 为 0 个, 'a' 被重复一次。因此可以匹配字符串 "aab"。
+     * 示例 5:
+     * <p>
+     * 输入:
+     * s = "mississippi"
+     * p = "mis*is*p*."
+     * 输出: false
+     */
+
+    public boolean isMatch(String text, String pattern) {
+        if (pattern.isEmpty()) {
+            return text.isEmpty();
+        }
+        boolean firstMatch = (!text.isEmpty() &&
+                (pattern.charAt(0) == text.charAt(0) || pattern.charAt(0) == '.'));
+        // 第二个为 *， 只需要text 和 pattern 第二个开始后面的串 后面的匹配
+        // 或者第一个匹配， text第二个开始的子串与pattern匹配
+        if (pattern.length() >= 2 && pattern.charAt(1) == '*') {
+            return (isMatch(text, pattern.substring(2)) ||
+                    (firstMatch && isMatch(text.substring(1), pattern)));
+        } else {
+            // 第一个字符匹配，后面的也匹配
+            return firstMatch && isMatch(text.substring(1), pattern.substring(1));
+        }
+    }
+
+    /**
+     * Q47: 给定一个可包含重复数字的序列，返回所有不重复的全排列。
+     * <p>
+     * 示例:
+     * <p>
+     * 输入: [1,1,2]
+     * 输出:
+     * [
+     * [1,1,2],
+     * [1,2,1],
+     * [2,1,1]
+     * ]
+     * <p>
+     * 来源：力扣（LeetCode）
+     * 链接：https://leetcode-cn.com/problems/permutations-ii
+     * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+     *
+     * @param nums
+     * @return
+     */
+    public static List<List<Integer>> permute47(int[] nums) {
+        List<List<Integer>> results = new ArrayList<>();
+        Deque<Integer> deque = new ArrayDeque<>();
+        Arrays.sort(nums);
+        boolean[] used = new boolean[nums.length];
+        backTrace47(deque, nums, used, results);
+        return results;
+    }
+
+    public static void backTrace47(Deque<Integer> deque, int[] nums, boolean[] used, List<List<Integer>> results) {
+        if (deque.size() == nums.length) {
+            results.add(new ArrayList<>(deque));
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (used[i]) {
+                continue;
+            }
+            if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) {
+                continue;
+            }
+            deque.add(nums[i]);
+            used[i] = true;
+            backTrace47(deque, nums, used, results);
+            deque.removeLast();
+            used[i] = false;
+        }
+    }
+
 
 }

@@ -1,7 +1,9 @@
 package dp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Solutions {
     /**
@@ -365,9 +367,9 @@ public class Solutions {
         }
         for (int i = 0; i <= amount; i++) {
             for (int j = 0; j < coins.length; j++) {
-                if(i - coins[j] > 0 && dp[i - coins[j]] != -1){
-                    if(dp[i] == -1 || dp[i] > dp[i -coins[j]] + 1 ){
-                        dp[i] = dp[i -coins[j]] + 1;
+                if (i - coins[j] > 0 && dp[i - coins[j]] != -1) {
+                    if (dp[i] == -1 || dp[i] > dp[i - coins[j]] + 1) {
+                        dp[i] = dp[i - coins[j]] + 1;
                     }
                 }
             }
@@ -379,40 +381,41 @@ public class Solutions {
 
     /**
      * Q44: 给定一个字符串 (s) 和一个字符模式 (p) ，实现一个支持 '?' 和 '*' 的通配符匹配。
-     *
+     * <p>
      * '?' 可以匹配任何单个字符。
      * '*' 可以匹配任意字符串（包括空字符串）。
      * 两个字符串完全匹配才算匹配成功。
-     *
+     * <p>
      * 说明:
-     *
+     * <p>
      * s 可能为空，且只包含从 a-z 的小写字母。
      * p 可能为空，且只包含从 a-z 的小写字母，以及字符 ? 和 *。
      * 示例 1:
-     *
+     * <p>
      * 输入:
      * s = "aa"
      * p = "a"
      * 输出: false
      * 解释: "a" 无法匹配 "aa" 整个字符串。
      * 示例 2:
-     *
+     * <p>
      * 输入:
      * s = "aa"
      * p = "*"
      * 输出: true
      * 解释: '*' 可以匹配任意字符串。
      * 示例 3:
-     *
+     * <p>
      * 输入:
      * s = "cb"
      * p = "?a"
      * 输出: false
      * 解释: '?' 可以匹配 'c', 但第二个 'a' 无法匹配 'b'。
-     *
+     * <p>
      * 来源：力扣（LeetCode）
      * 链接：https://leetcode-cn.com/problems/wildcard-matching
      * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+     *
      * @param s
      * @param p
      * @return
@@ -427,7 +430,6 @@ public class Solutions {
     //      1. dp[0][0] 表示什么都没有，其值为 true
     //      2. 第一行 dp[0][j]，换句话说，s 为空，与 p 匹配，所以只要 p 开始为 * 才为 true
     //      3. 第一列 dp[i][0]，当然全部为 false
-
     public boolean isMatch(String s, String p) {
         int m = s.length();
         int n = p.length();
@@ -455,4 +457,129 @@ public class Solutions {
         // 返回结果
         return dp[m][n];
     }
+
+    /**
+     * Q887: 你将获得 K 个鸡蛋，并可以使用一栋从 1 到 N  共有 N 层楼的建筑。
+     * <p>
+     * 每个蛋的功能都是一样的，如果一个蛋碎了，你就不能再把它掉下去。
+     * <p>
+     * 你知道存在楼层 F ，满足 0 <= F <= N 任何从高于 F 的楼层落下的鸡蛋都会碎，从 F 楼层或比它低的楼层落下的鸡蛋都不会破。
+     * <p>
+     * 每次移动，你可以取一个鸡蛋（如果你有完整的鸡蛋）并把它从任一楼层 X 扔下（满足 1 <= X <= N）。
+     * <p>
+     * 你的目标是确切地知道 F 的值是多少。
+     * <p>
+     * 无论 F 的初始值如何，你确定 F 的值的最小移动次数是多少？
+     * <p>
+     *  
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：K = 1, N = 2
+     * 输出：2
+     * 解释：
+     * 鸡蛋从 1 楼掉落。如果它碎了，我们肯定知道 F = 0 。
+     * 否则，鸡蛋从 2 楼掉落。如果它碎了，我们肯定知道 F = 1 。
+     * 如果它没碎，那么我们肯定知道 F = 2 。
+     * 因此，在最坏的情况下我们需要移动 2 次以确定 F 是多少。
+     * 示例 2：
+     * <p>
+     * 输入：K = 2, N = 6
+     * 输出：3
+     * 示例 3：
+     * <p>
+     * 输入：K = 3, N = 14
+     * 输出：4
+     * <p>
+     * 来源：力扣（LeetCode）
+     * 链接：https://leetcode-cn.com/problems/super-egg-drop
+     * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+     */
+
+    Map<Integer, Integer> memo;
+
+    public int superEggDrop(int K, int N) {
+        memo = new HashMap<>();
+        return dp(K, N);
+    }
+
+    public int dp(int K, int N) {
+        if (!memo.containsKey(N * 100 + K)) {
+            int ans;
+            if (N == 0)
+                ans = 0;
+            else if (K == 1)
+                ans = N;
+            else {
+                int lo = 1, hi = N;
+                while (lo + 1 < hi) {
+                    int x = (lo + hi) / 2;
+                    int t1 = dp(K - 1, x - 1);
+                    int t2 = dp(K, N - x);
+
+                    if (t1 < t2)
+                        lo = x;
+                    else if (t1 > t2)
+                        hi = x;
+                    else
+                        lo = hi = x;
+                }
+
+                ans = 1 + Math.min(Math.max(dp(K - 1, lo - 1), dp(K, N - lo)),
+                        Math.max(dp(K - 1, hi - 1), dp(K, N - hi)));
+            }
+
+            memo.put(N * 100 + K, ans);
+        }
+        return memo.get(N * 100 + K);
+    }
+
+    /**
+     * Q221: 在一个由 0 和 1 组成的二维矩阵内，找到只包含 1 的最大正方形，并返回其面积。
+     * <p>
+     * 示例:
+     * <p>
+     * 输入:
+     * <p>
+     * 1 0 1 0 0
+     * 1 0 1 1 1
+     * 1 1 1 1 1
+     * 1 0 0 1 0
+     * <p>
+     * 输出: 4
+     * <p>
+     * 来源：力扣（LeetCode）
+     * 链接：https://leetcode-cn.com/problems/maximal-square
+     * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+     *
+     * @param matrix
+     * @return
+     */
+    public int maximalSquare(char[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return 0;
+        }
+        if (matrix[0] == null || matrix[0].length == 0) {
+            return 0;
+        }
+        int rows = matrix.length;
+        int columns = matrix[0].length;
+        int dp[] = new int[columns + 1];
+        int max = 0;
+        int prev = 0;
+        for (int i = 1; i < rows + 1; i++) {
+            for (int j = 1; j < columns + 1; j++) {
+                int temp = dp[j];
+                if (matrix[i - 1][j - 1] == '1') {
+                    dp[j] = Math.min(Math.min(dp[j - 1], dp[j]), prev) + 1;
+                    max = Math.max(max, dp[j]);
+                } else {
+                    dp[j] = 0;
+                }
+                prev = temp;
+            }
+        }
+        return max * max;
+    }
+
 }

@@ -222,11 +222,9 @@ public class Solutions {
      */
 
     public static ListNode reverseOfk(ListNode head, int groupCount) {
-        ListNode prev = null;
         int count = 0;
         ListNode temp = head;
         while (count < groupCount && temp != null) {
-            prev = temp;
             temp = temp.next;
             count++;
         }
