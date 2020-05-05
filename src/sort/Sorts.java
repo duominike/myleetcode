@@ -1,5 +1,7 @@
 package sort;
 
+import java.util.Random;
+
 public class Sorts {
     public int[] selectSort(int[] num) {
         for (int i = 0; i < num.length; i++) {
@@ -81,5 +83,50 @@ public class Sorts {
         num[left] = num[j];
         num[j] = pivot;
         return j;
+    }
+
+
+    /**
+     * 215: 在未排序数组中找到第K大的数。第n-k小的数
+     * @param left
+     * @param right
+     * @param nums
+     * @param k
+     * @return
+     */
+    public static int quickFindKthSmallest(int left, int right, int[] nums, int k) {
+        if (left == right) {
+            return nums[left];
+        }
+        Random random = new Random();
+        int privot_index = left + random.nextInt(right - left);
+        privot_index = partition215(left, right, privot_index, nums);
+        if (privot_index == k) {
+            return nums[privot_index];
+        } else if (privot_index < k) {
+            return quickFindKthSmallest(privot_index + 1, right, nums, k);
+        } else {
+            return quickFindKthSmallest(left, privot_index - 1, nums, k);
+        }
+    }
+
+    public static void swap215(int left, int right, int nums[]) {
+        int temp = nums[left];
+        nums[left] = nums[right];
+        nums[right] = temp;
+    }
+
+    public static int partition215(int left, int right, int pivot_index, int nums[]) {
+        int pivot = nums[pivot_index];
+        swap215(pivot_index, right, nums);
+        int store_index = left;
+        for (int i = left; i <= right; i++) {
+            if (nums[i] < pivot) {
+                swap215(store_index, i, nums);
+                store_index++;
+            }
+        }
+        swap215(store_index, right, nums);
+        return store_index;
     }
 }

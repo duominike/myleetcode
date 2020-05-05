@@ -1,14 +1,16 @@
 package linklist;
 
 
+import java.util.List;
+
 public class Test {
     public static void main(String[] args){
 //        testRotate();
 //        testAddNumber();
 //        testReverseLinkList();
 //        Solutions.removeNthFromEnd(new ListNode(1), 1);
-        testReverseOfK();
-//          testMergeList();
+        //testReverseOfK();
+          testMergeList();
     }
 
     private static void testRotate() {
@@ -91,18 +93,13 @@ public class Test {
 
     public static void testMergeList(){
         ListNode head1 = new ListNode(1);
-        ListNode  head2 = new ListNode(8);
-        ListNode temp1= head1;
-        ListNode temp2= head2;
-        for(int i = 2; i< 6; i++){
-            if(i %2 == 0){
-                temp1.next = new ListNode(i);
-                temp1 = temp1.next;
-            }else{
-//                temp2.next = new ListNode(i);
-//                temp2 = temp2.next;
-            }
-        }
-        Solutions.mergeTwoLists(head1, head2);
+        head1.next = new ListNode(4);
+        head1.next.next = new ListNode(5);
+        ListNode  head2 = new ListNode(1);
+        head2.next = new ListNode(3);
+        head2.next.next = new ListNode(4);
+        ListNode  head3 = new ListNode(2);
+        head3.next = new ListNode(6);
+        Solutions.mergeKLists23(new ListNode[]{head1, head2, head3});
     }
 }

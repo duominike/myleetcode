@@ -6,7 +6,7 @@ public class Test {
 //        testLongestValidParentheses();
         int [] heights = {2,1,5,6,2,3};
         //Solutions.largestRectangleArea(heights);
-        Solutions.calculate("1-11");
+        Solutions.removeDuplicateLetters("cbacdcbc");
     }
 
     private static void testLongestValidParentheses(){

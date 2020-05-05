@@ -458,6 +458,30 @@ public class Solutions {
         return dp[m][n];
     }
 
+    public boolean isMatch2(String text, String pattern) {
+        int m = text.length();
+        int n = pattern.length();
+        boolean[][] dp = new boolean[m+1][n+1];
+        dp[0][0] = true;
+        for(int j = 1; j<=n; j++){
+            dp[0][j] = j > 1 && pattern.charAt(j-1) == '*' && dp[0][j-2];
+        }
+        for(int i = 1; i<=m; i++){
+            for(int j = 1; j<=n; j++){
+                if(pattern.charAt(j) != '*'){
+                    dp[i][j] = dp[i-1][j-1] && isCharacterMatch(text.charAt(i), pattern.charAt(j));
+                }else{
+                    dp[i][j] = dp[i][j-2] || (dp[i-1][j] && isCharacterMatch(text.charAt(i-1), pattern.charAt(j-2)));
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    public boolean isCharacterMatch(char a, char b){
+        return a==b || b == '.';
+    }
+
     /**
      * Q887: 你将获得 K 个鸡蛋，并可以使用一栋从 1 到 N  共有 N 层楼的建筑。
      * <p>

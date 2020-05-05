@@ -2,6 +2,8 @@ package quickslowpointer;
 
 import linklist.ListNode;
 
+import java.util.HashMap;
+
 public class Solutions {
     /**
      * Q14: 编写一个函数来查找字符串数组中的最长公共前缀。
@@ -74,14 +76,15 @@ public class Solutions {
 
     /**
      * Q202: 编写一个算法来判断一个数 n 是不是快乐数。
-     *
+     * <p>
      * 「快乐数」定义为：对于一个正整数，每一次将该数替换为它每个位置上的数字的平方和，然后重复这个过程直到这个数变为 1，也可能是 无限循环 但始终变不到 1。如果 可以变为  1，那么这个数就是快乐数。
-     *
+     * <p>
      * 如果 n 是快乐数就返回 True ；不是，则返回 False 。
-     *
+     * <p>
      * 来源：力扣（LeetCode）
      * 链接：https://leetcode-cn.com/problems/happy-number
      * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+     *
      * @param n
      * @return
      */
@@ -97,31 +100,75 @@ public class Solutions {
     }
 
     /**
-     *
      * 876. 链表的中间结点
      * 给定一个带有头结点 head 的非空单链表，返回链表的中间结点。
-     *  如果有两个中间结点，则返回第二个中间结点。
+     * 如果有两个中间结点，则返回第二个中间结点。
      */
 
 
     public ListNode middleNode(ListNode head) {
-        if(head.next == null){
+        if (head.next == null) {
             return head;
         }
         ListNode slow = head;
         ListNode fast = head.next;
-        while(slow != fast){
-            if(fast == null || fast.next == null){
+        while (slow != fast) {
+            if (fast == null || fast.next == null) {
                 break;
             }
             slow = slow.next;
             fast = fast.next.next;
         }
-        if(fast == null){
+        if (fast == null) {
             return slow;
-        }else{
+        } else {
             return slow.next;
         }
+    }
 
+    /**
+     * LeetCode 第 340 题：给定一个字符串 s ，找出至多包含 k 个不同字符的最长子串 T。
+     * <p>
+     *  
+     * <p>
+     * 示例 1
+     * <p>
+     * 输入: s = "eceba", k = 2
+     * <p>
+     * 输出: 3
+     * <p>
+     *  
+     * <p>
+     * 解释: 则 T 为 "ece"，所以长度为 3。
+     * <p>
+     *  
+     * <p>
+     * 示例 2
+     * <p>
+     * 输入: s = "aa", k = 1
+     * <p>
+     * 输出: 2
+     * <p>
+     *  
+     * <p>
+     * 解释: 则 T 为 "aa"，所以长度为 2。
+     */
+    public int lengthOfLongestSubstringKDistinct(String s, int k) {
+        HashMap<Character, Integer> maps = new HashMap<>();
+        int max = 0;
+        for (int i = 0, j = 0; i < s.length(); j++) {
+            char cj = s.charAt(j);
+            maps.put(cj, maps.containsKey(cj) ? maps.get(cj) + 1 : 1);
+            while (maps.size() > k) {
+                char ci = s.charAt(i);
+                maps.put(ci, maps.get(ci) - 1);
+                if (maps.get(ci) == 0) {
+                    maps.remove(ci);
+                }
+                i++;
+            }
+            max = Math.max(max, j - i + 1);
+        }
+        return max;
     }
 }

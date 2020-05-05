@@ -7,6 +7,8 @@ package linklist;/*
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Solutions {
 
@@ -339,5 +341,196 @@ public class Solutions {
             }
         }
         return res;
+    }
+
+    public class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+
+        TreeNode(int x) {
+            val = x;
+        }
+    }
+
+    /**
+     * Q106: 给定一个单链表，其中的元素按升序排序，将其转换为高度平衡的二叉搜索树。
+     * <p>
+     * 本题中，一个高度平衡二叉树是指一个二叉树每个节点 的左右两个子树的高度差的绝对值不超过 1。
+     * <p>
+     * 示例:
+     * <p>
+     * 给定的有序链表： [-10, -3, 0, 5, 9],
+     * <p>
+     * 一个可能的答案是：[0, -3, 9, -10, null, 5], 它可以表示下面这个高度平衡二叉搜索树：
+     * <p>
+     * 0
+     * / \
+     * -3   9
+     * /   /
+     * -10  5
+     * <p>
+     * 来源：力扣（LeetCode）
+     * 链接：https://leetcode-cn.com/problems/convert-sorted-list-to-binary-search-tree
+     * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+     *
+     * @param head
+     * @return
+     */
+    public TreeNode sortedListToBST(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        if (head.next == null) {
+            TreeNode node = new TreeNode(head.val);
+            node.left = null;
+            node.right = null;
+            return node;
+        }
+        ListNode prev = null;
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast != null) {
+            if (fast.next == null) {
+                break;
+            }
+            prev = slow;
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        TreeNode node = new TreeNode(slow.val);
+        prev.next = null;
+        node.left = sortedListToBST(head);
+        node.right = sortedListToBST(slow.next);
+        return node;
+    }
+
+    /**
+     * Q138: 给定一个链表，每个节点包含一个额外增加的随机指针，该指针可以指向链表中的任何节点或空节点。
+     * <p>
+     * 要求返回这个链表的 深拷贝。
+     *
+     * @param
+     * @return
+     */
+    class Node {
+        int val;
+        Node next;
+        Node random;
+
+        public Node(int val) {
+            this.val = val;
+            this.next = null;
+            this.random = null;
+        }
+    }
+
+    public Node copyRandomList(Node head) {
+        if (head == null) {
+            return null;
+        }
+        Map<Node, Node> maps = new HashMap<>();
+        Node cur = head;
+        while (cur != null) {
+            maps.put(cur, new Node(cur.val));
+            cur = cur.next;
+        }
+        cur = head;
+        while (cur != null) {
+            maps.get(cur).next = maps.get(cur.next);
+            maps.get(cur).random = maps.get(cur.random);
+            cur = cur.next;
+        }
+        return maps.get(head);
+    }
+
+    public Node copyRandomList2(Node head) {
+        if (head == null) {
+            return null;
+        }
+        Node cur = head;
+        while (cur != null) {
+            Node temp = new Node(cur.val);
+            temp.next = cur.next;
+            cur.next = temp;
+            cur = cur.next.next;
+        }
+        cur = head;
+        while (cur != null) {
+            cur.next.random = (cur.random != null) ? cur.random.next : null;
+            cur = cur.next.next;
+        }
+
+        Node ptrOldList = head;
+        Node ptrNewList = head.next;
+        Node headOld = head.next;
+        while (ptrOldList != null) {
+            ptrOldList.next = ptrOldList.next.next;
+            ptrNewList.next = (ptrNewList.next != null) ? ptrNewList.next.next : null;
+            ptrOldList = ptrOldList.next;
+            ptrNewList = ptrNewList.next;
+        }
+        return headOld;
+    }
+    /*------------------------------------------------*/
+
+    /**
+     * Q23: 合并 k 个排序链表，返回合并后的排序链表。请分析和描述算法的复杂度。
+     *
+     * 示例:
+     *
+     * 输入:
+     * [
+     *   1->4->5,
+     *   1->3->4,
+     *   2->6
+     * ]
+     * 输出: 1->1->2->3->4->4->5->6
+     *
+     * 来源：力扣（LeetCode）
+     * 链接：https://leetcode-cn.com/problems/merge-k-sorted-lists
+     * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+     * @param lists
+     * @return
+     */
+    public static ListNode mergeKLists23(ListNode[] lists) {
+        if(lists == null || lists.length == 0){
+            return null;
+        }
+        if(lists.length == 1){
+            return lists[0];
+        }
+        ListNode result = lists[0];
+        for(int i = 1; i<lists.length; i++){
+            result = mergeTwoLists23(result, lists[i]);
+        }
+        return result;
+    }
+
+    public static ListNode mergeTwoLists23(ListNode node1, ListNode node2){
+        ListNode head = node1;
+        ListNode curr1 = node1;
+        ListNode prev1 = null;
+        ListNode curr2 = node2;
+        while(curr2 != null){
+            while(curr1 != null && curr1.val < curr2.val){
+                prev1 = curr1;
+                curr1 = curr1.next;
+            }
+            if(prev1 != null){
+                prev1.next = curr2;
+                ListNode temp = curr2.next;
+                curr2.next = curr1;
+                prev1 = curr2;
+                curr2 = temp;
+            }else{
+                ListNode temp = curr2.next;
+                curr2.next = curr1;
+                prev1 = curr2;
+                head = prev1;
+                curr2 = temp;
+            }
+        }
+        return head;
     }
 }

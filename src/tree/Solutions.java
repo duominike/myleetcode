@@ -688,6 +688,62 @@ public class Solutions {
     }
 
     /**
+     * Q103: 给定一个二叉树，返回其节点值的锯齿形层次遍历。（即先从左往右，再从右往左进行下一层遍历，以此类推，层与层之间交替进行）。
+     *
+     * 例如：
+     * 给定二叉树 [3,9,20,null,null,15,7],
+     *
+     *     3
+     *    / \
+     *   9  20
+     *     /  \
+     *    15   7
+     * 返回锯齿形层次遍历如下：
+     *
+     * [
+     *   [3],
+     *   [20,9],
+     *   [15,7]
+     * ]
+     *
+     * 来源：力扣（LeetCode）
+     * 链接：https://leetcode-cn.com/problems/binary-tree-zigzag-level-order-traversal
+     * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        if(root == null){
+            return res;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        int level = 1;
+        while(!queue.isEmpty()){
+            int level_length = queue.size();
+            List<Integer> one = new ArrayList<>();
+            for(int i = 0; i< level_length; i++){
+                TreeNode node = queue.poll();
+                if(level % 2 == 0){
+                    one.add(0, node.val);
+                }else{
+                    one.add(node.val);
+                }
+                if(node.left != null){
+                    queue.offer(node.left);
+                }
+                if(node.right != null){
+                    queue.offer(node.right);
+                }
+            }
+            level++;
+            res.add(one);
+        }
+        return res;
+    }
+
+    /**
      * Q108: 将一个按照升序排列的有序数组，转换为一棵高度平衡二叉搜索树。
      * <p>
      * 本题中，一个高度平衡二叉树是指一个二叉树每个节点 的左右两个子树的高度差的绝对值不超过 1。
@@ -765,6 +821,115 @@ public class Solutions {
             return minDepth(root.right) +1;
         }else{
             return 1;
+        }
+    }
+
+    /**
+     * Q36: 输入一棵二叉搜索树，将该二叉搜索树转换成一个排序的循环双向链表。要求不能创建任何新的节点，只能调整树中节点指针的指向。
+     *
+     *  
+     *
+     * 为了让您更好地理解问题，以下面的二叉搜索树为例：
+     *
+     *  
+     *
+     *
+     *
+     *  
+     *
+     * 我们希望将这个二叉搜索树转化为双向循环链表。链表中的每个节点都有一个前驱和后继指针。对于双向循环链表，第一个节点的前驱是最后一个节点，最后一个节点的后继是第一个节点。
+     *
+     * 下图展示了上面的二叉搜索树转化成的链表。“head” 表示指向链表中有最小元素的节点。
+     *
+     *
+     * 特别地，我们希望可以就地完成转换操作。当转化完成以后，树中节点的左指针需要指向前驱，树中节点的右指针需要指向后继。还需要返回链表中的第一个节点的指针。
+     *
+     * 来源：力扣（LeetCode）
+     * 链接：https://leetcode-cn.com/problems/er-cha-sou-suo-shu-yu-shuang-xiang-lian-biao-lcof
+     * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+     * @param root
+     * @return
+     */
+    public static TreeNode treeToDoublyList(TreeNode root) {
+        if(root == null){
+            return root;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        inOrderToQueue(queue, root);
+        TreeNode head = queue.poll();
+        TreeNode prev = head;
+        prev.left = null;
+        TreeNode curr = null;
+        while(!queue.isEmpty()){
+            curr = queue.poll();
+            prev.right = curr;
+            curr.left = prev;
+            prev = curr;
+        }
+        prev.right = head;
+        head.left = prev;
+        return head;
+    }
+
+    public static void inOrderToQueue(Queue<TreeNode> queue, TreeNode root){
+        if(root == null){
+            return;
+        }
+        inOrderToQueue(queue, root.left);
+        queue.offer(root);
+        inOrderToQueue(queue, root.right);
+    }
+
+    /**
+     * Q114: 给定一个二叉树，原地将它展开为链表。
+     *
+     * 例如，给定二叉树
+     *
+     *     1
+     *    / \
+     *   2   5
+     *  / \   \
+     * 3   4   6
+     * 将其展开为：
+     *
+     * 1
+     *  \
+     *   2
+     *    \
+     *     3
+     *      \
+     *       4
+     *        \
+     *         5
+     *          \
+     *           6
+     *
+     * 来源：力扣（LeetCode）
+     * 链接：https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list
+     * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+     * @param root
+     */
+    public static void flatten(TreeNode root) {
+        if(root == null){
+            return;
+        }
+        Deque<TreeNode> queue = new ArrayDeque<>();
+        queue.add(root);
+        TreeNode head = root;
+        TreeNode prev = null;
+        while(!queue.isEmpty()){
+            TreeNode curr = queue.pollLast();
+            if(curr.right != null){
+                queue.add(curr.right);
+            }
+            if(curr.left != null){
+                queue.add(curr.left);
+            }
+            curr.left = null;
+            if(prev != null){
+                prev.right = curr;
+            }
+            prev = curr;
         }
     }
 }
