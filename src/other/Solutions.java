@@ -155,6 +155,11 @@ public class Solutions {
         return ans;
     }
 
+    /**
+     * 38: 外观数列
+     * @param n
+     * @return
+     */
     public String countAndSay(int n) {
         if (n == 1) {
             return "1";

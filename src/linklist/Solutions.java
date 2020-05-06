@@ -254,7 +254,7 @@ public class Solutions {
     }
 
     /**
-     * 合并两个有序链表
+     * 21： 合并两个有序链表
      *
      * @param l1
      * @param l2
@@ -302,6 +302,11 @@ public class Solutions {
         return newHead;
     }
 
+    /**
+     * 83
+     * @param head
+     * @return
+     */
     public ListNode deleteDuplicates(ListNode head) {
         if (head == null || head.next == null) {
             return head;
