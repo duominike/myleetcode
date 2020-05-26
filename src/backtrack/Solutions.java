@@ -457,5 +457,127 @@ public class Solutions {
         }
     }
 
+    /**
+     * 93. 复原IP地址
+     * 给定一个只包含数字的字符串，复原它并返回所有可能的 IP 地址格式。
+     *
+     * 有效的 IP 地址正好由四个整数（每个整数位于 0 到 255 之间组成），整数之间用 '.' 分隔。
+     *
+     *
+     *
+     * 示例:
+     *
+     * 输入: "25525511135"
+     * 输出: ["255.255.11.135", "255.255.111.35"]
+     * @param s
+     * @return
+     */
+    public List<String> restoreIpAddresses(String s) {
+        int len = s.length();
+        List<String> res = new ArrayList<>();
+        if (len > 12 || len < 4) {
+            return res;
+        }
 
+        Deque<String> path = new ArrayDeque<>(4);
+        dfs(s, len, 0, 4, path, res);
+        return res;
+    }
+
+    // 需要一个变量记录剩余多少段还没被分割
+
+    private void dfs(String s, int len, int begin, int residue, Deque<String> path, List<String> res) {
+        if (begin == len) {
+            if (residue == 0) {
+                res.add(String.join(".", path));
+            }
+            return;
+        }
+
+        for (int i = begin; i < begin + 3; i++) {
+            if (i >= len) {
+                break;
+            }
+
+            if (residue * 3 < len - i) {
+                continue;
+            }
+
+            if (judgeIpSegment(s, begin, i)) {
+                String currentIpSegment = s.substring(begin, i + 1);
+                path.addLast(currentIpSegment);
+                dfs(s, len, i + 1, residue - 1, path, res);
+                path.removeLast();
+            }
+        }
+    }
+
+    private boolean judgeIpSegment(String s, int left, int right) {
+        int len = right - left + 1;
+        if (len > 1 && s.charAt(left) == '0') {
+            return false;
+        }
+
+        int res = 0;
+        while (left <= right) {
+            res = res * 10 + s.charAt(left) - '0';
+            left++;
+        }
+
+        return res >= 0 && res <= 255;
+    }
+
+    /**
+     * 695. 岛屿的最大面积
+     * 给定一个包含了一些 0 和 1 的非空二维数组 grid 。
+     *
+     * 一个 岛屿 是由一些相邻的 1 (代表土地) 构成的组合，这里的「相邻」要求两个 1 必须在水平或者竖直方向上相邻。你可以假设 grid 的四个边缘都被 0（代表水）包围着。
+     *
+     * 找到给定的二维数组中最大的岛屿面积。(如果没有岛屿，则返回面积为 0 。)
+     *
+     *
+     *
+     * 示例 1:
+     *
+     * [[0,0,1,0,0,0,0,1,0,0,0,0,0],
+     *  [0,0,0,0,0,0,0,1,1,1,0,0,0],
+     *  [0,1,1,0,1,0,0,0,0,0,0,0,0],
+     *  [0,1,0,0,1,1,0,0,1,0,1,0,0],
+     *  [0,1,0,0,1,1,0,0,1,1,1,0,0],
+     *  [0,0,0,0,0,0,0,0,0,0,1,0,0],
+     *  [0,0,0,0,0,0,0,1,1,1,0,0,0],
+     *  [0,0,0,0,0,0,0,1,1,0,0,0,0]]
+     * 对于上面这个给定矩阵应返回 6。注意答案不应该是 11 ，因为岛屿只能包含水平或垂直的四个方向的 1 。
+     *
+     * 示例 2:
+     *
+     * [[0,0,0,0,0,0,0,0]]
+     * 对于上面这个给定的矩阵, 返回 0。
+     * @param grid
+     * @return
+     */
+    public int maxAreaOfIsland(int[][] grid) {
+        int res = 0;
+        for(int i = 0; i< grid.length; i++){
+            for(int j=0; j<grid[i].length; j++){
+                if(grid[i][j] == 1){
+                    res = Math.max(res, dfs(i,j, grid));
+                }
+            }
+        }
+        return res;
+    }
+
+    public int dfs(int i, int j, int[][] grid){
+        if(i < 0 || j < 0 || i >= grid.length || j >= grid[i].length || grid[i][j] == 0 ){
+            return 0;
+        }
+        grid[i][j] = 0;
+        int num = 1;
+        num += dfs(i + 1, j, grid);
+        num += dfs(i - 1, j, grid);
+        num += dfs(i, j + 1, grid);
+        num += dfs(i, j - 1, grid);
+        return num;
+    }
 }

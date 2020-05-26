@@ -296,5 +296,26 @@ public class Solutions {
         return negative? -ans : ans;
     }
 
+    public String simplifyPath(String path) {
+        String[] dirs = path.split("/");
+        List<String> res = new ArrayList<>();
+        int jumpCount = 0;
+        for(int i = dirs.length -1; i>=0; i++){
+            if(dirs[i] == " " || dirs[i] == "."){
+                continue;
+            }
+            if(dirs[i] == ".."){
+                jumpCount++;
+                continue;
+            }
+            if(jumpCount > 0){
+                jumpCount--;
+                continue;
+            }
+            res.add(0, dirs[i]);
+        }
+        return "/" + String.join("/" , res);
+    }
+
 
 }

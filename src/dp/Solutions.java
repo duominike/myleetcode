@@ -236,48 +236,28 @@ public class Solutions {
      * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
      */
     public int uniquePathsWithObstacles(int[][] grid) {
-        if (grid == null || grid.length == 0) {
+        int R = grid.length;
+        int C = grid[0].length;
+        if(grid[0][0] == 1){
             return 0;
         }
-        int m = grid.length;
-        int n = grid[0].length;
-        if (m < 1 || n < 1) {
-            return 0;
+        grid[0][0] = 1;
+        for(int i = 1; i < R; i++){
+            grid[i][0] = (grid[i][0] == 0 && grid[i-1][0] == 1) ? 1 : 0;
         }
-        if (grid[0][0] == 1) {
-            return 0;
+        for(int i = 1; i < C; i++){
+            grid[0][i] = (grid[0][i] == 0 && grid[0][i-1] == 1) ? 1 : 0;
         }
-        int dp[][] = new int[m][n];
-        dp[0][0] = 1;
-        for (int i = 1; i < n; i++) {
-            if (grid[0][i] == 1) {
-                dp[0][i] = 0;
-            } else {
-                dp[0][i] = dp[0][i - 1] == 0 ? 0 : dp[0][i - 1];
-            }
-        }
-
-        for (int i = 1; i < m; i++) {
-            if (grid[i][0] == 1) {
-                dp[i][0] = 0;
-            } else {
-                dp[i][0] = dp[i - 1][0] == 0 ? 0 : dp[0][i - 1];
-            }
-        }
-        for (int i = 1; i < m; i++) {
-            for (int j = 1; j < n; j++) {
-                if (grid[i - 1][j] != 1 && grid[i][j - 1] != 1) {
-                    dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
-                } else if (dp[i - 1][j] == 1 && grid[i][j - 1] == 1) {
-                    dp[i][j] = 0;
-                } else if (dp[i - 1][j] == 1) {
-                    dp[i][j] = dp[i][j - 1];
-                } else {
-                    dp[i][j] = dp[i - 1][j];
+        for(int i =1; i<R; i++){
+            for(int j = 1; j<C; j++){
+                if(grid[i][j] == 0){
+                    grid[i][j] = grid[i-1][j] + grid[i][j-1];
+                }else{
+                    grid[i][j] = 0;
                 }
             }
         }
-        return dp[m - 1][n - 1];
+        return grid[R-1][C-1];
     }
 
     /**

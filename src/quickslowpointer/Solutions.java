@@ -170,6 +170,7 @@ public class Solutions {
             max = Math.max(max, j - i + 1);
         }
         return max;
+
     }
 
     public int trap(int[] height) {

@@ -98,40 +98,27 @@ public class Resolutions {
      * @return
      */
     public static String multiply(String num1, String num2) {
-        if (num1.length() < num2.length()) {
-            return multiply(num2, num1);
+        if (num1.equals("0") || num2.equals("0")) {
+            return "0";
         }
         int[] res = new int[num1.length() + num2.length()];
-        int[][] calc = new int[num2.length()][num1.length() + num2.length() - 1];
-        for (int i = num2.length() - 1; i >= 0; i--) {
-            int a = Integer.parseInt(String.valueOf(num2.charAt(i)));
-            for (int j = 0; j < num1.length(); j++) {
-                int b = Integer.parseInt(String.valueOf(num1.charAt(j)));
-                calc[num2.length() - 1 - i][j + i] = a * b;
-            }
-        }
-        for (int i = 0; i < num1.length() + num2.length() - 1; i++) {
-            for (int j = 0; j < num2.length(); j++) {
-                res[i + 1] += calc[j][i];
-            }
-        }
-        for (int i = res.length - 1; i > 0; i--) {
-            if (res[i] >= 10) {
-                int val = res[i];
-                res[i - 1] = res[i - 1] + val / 10;
-                res[i] = val % 10;
+        for (int i = num1.length() - 1; i >= 0; i--) {
+            int n1 = num1.charAt(i) - '0';
+            for (int j = num2.length() - 1; j >= 0; j--) {
+                int n2 = num2.charAt(j) - '0';
+                int sum = res[i + j + 1] + n1 * n2;
+                res[i + j + 1] = sum % 10;
+                res[i + j] = res[i + j] + sum / 10;
             }
         }
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < res.length; i++) {
+            if (i == 0 && res[i] == 0) {
+                continue;
+            }
             stringBuilder.append(res[i]);
         }
-        String newStr = stringBuilder.toString().replaceAll("^(0+)", "");
-        if (newStr.equals("")) {
-            return "0";
-        } else {
-            return newStr;
-        }
+        return stringBuilder.toString();
     }
 
     /**
@@ -420,6 +407,15 @@ public class Resolutions {
         }
         return stringBuilder.toString();
 
+    }
+
+    public int hammingWeight(int n) {
+        int sum = 0;
+        while (n != 0) {
+            sum++;
+            n = n & (n - 1);
+        }
+        return sum;
     }
 
 }
